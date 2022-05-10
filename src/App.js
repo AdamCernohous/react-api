@@ -38,9 +38,9 @@ function App() {
   }
 
   return (
-    <div className='w-screen h-screen'>
+    <div className='flex flex-row w-screen h-screen bg-gray-900'>
       <h1>Car brands and models API</h1>
-      <section className='flex flex-row'>
+      <section>
         <h2>GET</h2>
         <div>
           {carBrands.map(brand => {
