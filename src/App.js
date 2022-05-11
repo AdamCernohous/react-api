@@ -24,8 +24,6 @@ function App() {
     axios.post(`http://localhost:5265/api/CarBrands`, {
       name: newCarBrandName
     });
-    axios.get(`http://localhost:5265/api/CarBrands`)
-      .then(response => setCarBrands(response.data));
   }
 
   if(isLoading){
