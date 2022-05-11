@@ -5,6 +5,7 @@ import './main.css';
 
 function App() {
   const [carBrands, setCarBrands] = useState([]);
+  const [carModels, setCarModels] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const [newCarBrandName, setNewCarBrandName] = useState('');
@@ -14,24 +15,18 @@ function App() {
       .then(response => setCarBrands(response.data));
     
     setIsLoading(false);
+
+    axios.get(`http://localhost:5265/api/CarModels`)
+      .then(response => setCarModels(response.data));
   }, []);
 
   const addCarBrand = async () => {
     axios.post(`http://localhost:5265/api/CarBrands`, {
       name: newCarBrandName
     });
+    axios.get(`http://localhost:5265/api/CarBrands`)
+      .then(response => setCarBrands(response.data));
   }
-
-  // const putCarBrand = async (id) => {
-  //   axios.put(`http://localhost:5265/api/CarBrands/${id}`, {
-  //     carBrandId: id,
-  //     name: updatedCarBrandName
-  //   });
-  // }
-
-  // const deleteCarBrand = async (id) => {
-  //   axios.delete(`http://localhost:5265/api/CarBrands/${id}`);
-  // }
 
   if(isLoading){
     return <h1>Loading...</h1>
@@ -66,7 +61,18 @@ function App() {
         </div>
       </section>
       <section>
-
+        <h2>GET</h2>
+        <div>
+          {carModels.map(model => {
+            return (
+              <CarBrand
+                key={model.carModelId}
+                id={model.carModelId}
+                name={model.name}
+              />
+            )
+          })}
+        </div>
       </section>
     </div>
   );
