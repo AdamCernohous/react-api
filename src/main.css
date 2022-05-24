@@ -3,8 +3,10 @@
 @tailwind utilities;
 
 @layer components {
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&display=swap');
+
     body {
-        color: #A8A8A8;
+        font-family: 'Plus Jakarta Sans';
     }
     input {
         background-color: rgb(17 24 39 / var(--tw-bg-opacity));

@@ -12,7 +12,7 @@ function App() {
   const [newCarBrandName, setNewCarBrandName] = useState('');
 
   const [newModelName, setNewModelName] = useState('');
-  const [newModelSerie, setNewModelSerie] = useState('');
+  const [newModelYear, setNewModelYear] = useState(0);
   const [newModelBasePrice, setNewModelBasePrice] = useState(0);
   const [newModelBrandId, setNewModelBrandId] = useState(0);
 
@@ -24,18 +24,18 @@ function App() {
       .then(response => setCarModels(response.data));
     
     setIsLoading(false);
-  }, []);
+  }, [true]);
 
-  const addCarBrand = async () => {
+  const postCarBrand = async () => {
     axios.post(`http://localhost:5265/api/CarBrands`, {
       name: newCarBrandName
     });
   }
 
-  const addCarModel = async () => {
+  const postCarModel = async () => {
     axios.post(`http://localhost:5265/api/CarModels`, {
       modelName: newModelName,
-      series: newModelSerie,
+      year: newModelYear,
       basePrice: newModelBasePrice,
       carBrandId: newModelBrandId
     });
@@ -47,84 +47,92 @@ function App() {
   }
 
   return (
-    <div className='flex flex-row w-screen h-screen bg-gray-900'>
-      <h1>Car brands and models API</h1>
-      <section>
-        <h2>GET</h2>
+    <div className='w-[85vw] ml-auto mr-auto overflow-hidden'>
+      <h1 className='text-center font-black text-6xl p-8 pl-52 pr-52 mb-10'>Car brands and models API</h1>
+      <div className='flex flex-row justify-around'>
         <div>
           {carBrands.map(brand => {
             return (
-              <CarBrand
-                key={brand.carBrandId}
-                id={brand.carBrandId}
-                name={brand.name}
-              />
+              <div>
+                <CarBrand
+                  id={brand.carBrandId}
+                  name={brand.name}
+                />
+                {carModels.map(model => {
+                  if(model.carBrandId === brand.carBrandId){
+                    return (
+                      <CarModel
+                        id={model.carModelId}
+                        name={model.modelName}
+                        year={model.year}
+                        basePrice={model.basePrice}
+                        carBrandId={model.carBrandId}
+                      />
+                    )
+                  }
+                })}
+              </div>
             )
           })}
         </div>
-      </section>
-      <section>
-        <h2>POST</h2>
-        <div>
-          <input
-            type='text'
-            required={true}
-            onChange={e => setNewCarBrandName(e.target.value)}
-          />
-          <button onClick={addCarBrand}>Add</button>
-        </div>
-      </section>
-      <section>
-        <h2>GET</h2>
-        <div>
-          {carModels.map(model => {
-            return (
-              <CarModel
-                key={model.carModelId}
-                id={model.carModelId}
-                name={model.modelName}
-                series={model.series}
-                basePrice={model.basePrice}
-                carBrandId={model.carBrandId}
+        <div className='flex flex-col w-96'>
+          <div className='flex flex-col'>
+            <h2 className='text-4xl font-bold mb-4'>Add car brand.</h2>
+            <div className='relative mt-4 mb-4'>
+              <label className='absolute p-1 pb-0 text-xs text-gray-500 left-3 top-[-10px] bg-white'>Name</label>
+              <input
+                className='border-2 border-gray-500 rounded-xl p-1 pl-6 w-[100%]'
+                type='text'
+                onChange={e => setNewCarBrandName(e.target.value)}
               />
-            )
-          })}
+              <div className='relative ml-auto mr-auto'>
+                <button className='mt-4 mb-8 p-2 border-2 w-[100%] border-solid border-[#45D645] text-[#45D645] rounded-3xl transition-all hover:bg-[#45D645] hover:text-white' onClick={() => postCarBrand()}>Add</button>
+              </div>
+            </div>
+          </div>
+          <div>
+            <h2 className='text-4xl font-bold mb-8'>Add car model.</h2>
+            <div className='grid grid-cols-2 grid-rows-2 gap-2'>
+              <div className='relative'>
+                <label className='absolute p-1 pb-0 pt-0 text-xs text-gray-500 left-3 top-[-10px] bg-white'>Name</label>
+                <input
+                  className='border-2 border-gray-500 rounded-xl p-1 pl-6 w-[100%]'
+                  type='text'
+                  onChange={e => setNewModelName(e.target.value)}
+                />
+              </div>
+              <div className='relative'>
+                <label className='absolute p-1 pb-0 pt-0 text-xs text-gray-500 left-3 top-[-10px] bg-white'>Year</label>
+                <input
+                  className='border-2 border-gray-500 rounded-xl p-1 pl-6 w-[100%]'
+                  type='number'
+                  onChange={e => setNewModelYear(e.target.value)}
+                />
+              </div>
+              <div className='relative mt-2'>
+                <label className='absolute p-1 pb-0 pt-0 text-xs text-gray-500 left-3 top-[-10px] bg-white'>Base price</label>
+                <input
+                  className='border-2 border-gray-500 rounded-xl p-1 pl-6 w-[100%]'
+                  type='number'
+                  onChange={e => setNewModelBasePrice(e.target.value)}
+                />
+              </div>
+              <div className='relative mt-2'>
+                <label className='absolute p-1 pb-0 pt-0 text-xs text-gray-500 left-3 top-[-10px] bg-white'>Brand ID</label>
+                <select className='w-[100%] h-[100%] border-2 border-gray-500 rounded-xl pl-2' onChange={e => setNewModelBrandId(e.target.value)}>
+                  <option value="">Select brand</option>
+                  {carBrands.map(brand => {
+                    return <option value={brand.carBrandId}>{brand.name}</option>
+                  })}
+                </select>
+              </div>
+            </div>
+            <div className='relative ml-auto mr-auto'>
+              <button className='mt-4 mb-4 p-2 border-2 w-[100%] border-solid border-[#45D645] text-[#45D645] rounded-3xl transition-all hover:bg-[#45D645] hover:text-white' onClick={() => postCarModel()}>Add</button>
+            </div>
+          </div>
         </div>
-      </section>
-      <section>
-        <h2>POST</h2>
-        <div>
-          <label>Model Name</label>
-          <input
-            type='text'
-            required={true}
-            onChange={e => setNewModelName(e.target.value)}
-          />
-          <label>Model Serie</label>
-          <input
-            type='text'
-            required={true}
-            onChange={e => setNewModelSerie(e.target.value)}
-          />
-          <label>Model BasePrice</label>
-          <input
-            type='number'
-            required={true}
-            onChange={e => setNewModelBasePrice(e.target.value)}
-          />
-          <label>Brand</label>
-          <select onChange={e => setNewModelBrandId(e.target.value)}>
-            {
-              carBrands.map(brand => {
-                return (
-                <option key={brand.carBrandId} value={brand.carBrandId}>{brand.name}</option>
-                )
-              })
-            }
-          </select>
-          <button onClick={addCarModel}>Add</button>
-        </div>
-      </section>
+      </div>
     </div>
   );
 }
