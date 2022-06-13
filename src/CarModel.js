@@ -2,7 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import './main.css';
 
-const CarModel = ({ id, name, year, basePrice, carBrandId }) => {
+const CarModel = ({ id, name, year, basePrice, carBrandId, GetModels }) => {
 	const [updatedCarModelName, setUpdatedCarModelName] = useState('');
 	const [updatedCarModelYear, setUpdatedCarModelYear] = useState(0);
 	const [updatedCarModelBasePrice, setUpdatedCarModelBasePrice] = useState(0);
@@ -16,10 +16,12 @@ const CarModel = ({ id, name, year, basePrice, carBrandId }) => {
 			basePrice: updatedCarModelBasePrice,
 			carBrandId: updatedCarModelBrandId
 		});
+		GetModels();
 	}
 
 	const deleteCarModel = async (id) => {
 		axios.delete(`http://localhost:5265/api/CarModels/${id}`);
+		GetModels();
 	}
 
 	return (

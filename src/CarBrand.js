@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from 'axios';
 import './main.css';
 
-const CarBrand = ({ id, name }) => {
+const CarBrand = ({ id, name, GetBrands }) => {
 	const [updatedCarBrandName, setUpdatedCarBrandName] = useState('');
 
 	const putCarBrand = async (id) => {
@@ -10,10 +10,12 @@ const CarBrand = ({ id, name }) => {
 			carBrandId: id,
 			name: updatedCarBrandName
 		});
+		GetBrands();
 	}
 
 	const deleteCarBrand = async (id) => {
 		axios.delete(`http://localhost:5265/api/CarBrands/${id}`);
+		GetBrands();
 	}
 
 	return (

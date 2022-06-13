@@ -16,20 +16,30 @@ function App() {
   const [newModelBasePrice, setNewModelBasePrice] = useState(0);
   const [newModelBrandId, setNewModelBrandId] = useState(0);
 
-  useEffect(() => {
-    axios.get(`http://localhost:5265/api/CarBrands`)
-      .then(response => setCarBrands(response.data));
+  const [filtered, setFiltered] = useState('');
 
-    axios.get(`http://localhost:5265/api/CarModels`)
-      .then(response => setCarModels(response.data));
+  useEffect(() => {
+    GetCarBrands();
+    GetCarModels();
     
     setIsLoading(false);
-  }, [true]);
+  }, [filtered]);
+
+  const GetCarBrands = () => {
+    axios.get(`http://localhost:5265/api/CarBrands?param=${filtered}`)
+      .then(response => setCarBrands(response.data));
+  }
+
+  const GetCarModels = () => {
+    axios.get(`http://localhost:5265/api/CarModels`)
+      .then(response => setCarModels(response.data));
+  }
 
   const postCarBrand = async () => {
     axios.post(`http://localhost:5265/api/CarBrands`, {
       name: newCarBrandName
     });
+    GetCarBrands();
   }
 
   const postCarModel = async () => {
@@ -39,7 +49,7 @@ function App() {
       basePrice: newModelBasePrice,
       carBrandId: newModelBrandId
     });
-    console.log(newModelBrandId);
+    GetCarModels();
   }
 
   if(isLoading){
@@ -50,13 +60,22 @@ function App() {
     <div className='w-[85vw] ml-auto mr-auto overflow-hidden'>
       <h1 className='text-center font-black text-6xl p-8 pl-52 pr-52 mb-10'>Car brands and models API</h1>
       <div className='flex flex-row justify-around'>
-        <div>
+        <div className='relative '>
+          <div className='relative'>
+            <label className='absolute p-1 pb-0 pt-0 text-xs text-gray-500 left-3 top-[-10px] bg-white'>Search</label>
+            <input
+              className='border-2 border-gray-500 rounded-xl p-1 pl-6 w-[100%]'
+              type='text'
+              onChange={e => setFiltered(e.target.value)}
+            />
+          </div>
           {carBrands.map(brand => {
             return (
               <div>
                 <CarBrand
                   id={brand.carBrandId}
                   name={brand.name}
+                  GetBrands={GetCarBrands}
                 />
                 {carModels.map(model => {
                   if(model.carBrandId === brand.carBrandId){
@@ -67,6 +86,7 @@ function App() {
                         year={model.year}
                         basePrice={model.basePrice}
                         carBrandId={model.carBrandId}
+                        GetModels={GetCarModels}
                       />
                     )
                   }
