@@ -19,20 +19,22 @@ function App() {
   const [filtered, setFiltered] = useState('');
 
   useEffect(() => {
-    GetCarBrands();
+    GetCarBrands(filtered);
     GetCarModels();
     
     setIsLoading(false);
-  }, [filtered]);
+  }, [carBrands, carModels]);
 
-  const GetCarBrands = () => {
+  const GetCarBrands = (filtered) => {
     axios.get(`http://localhost:5265/api/CarBrands?param=${filtered}`)
-      .then(response => setCarBrands(response.data));
+      .then(response => setCarBrands(response.data))
+      .catch(err => console.log(err));
   }
 
   const GetCarModels = () => {
     axios.get(`http://localhost:5265/api/CarModels`)
-      .then(response => setCarModels(response.data));
+      .then(response => setCarModels(response.data))
+      .catch(err => console.log(err));
   }
 
   const postCarBrand = async () => {
